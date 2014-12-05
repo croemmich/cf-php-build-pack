@@ -204,6 +204,7 @@ class ComposerTool(object):
             composerPath = os.path.join(self._ctx['BUILD_DIR'], 'php',
                                         'bin', 'composer.phar')
             composerEnv = {
+                'PATH': os.getenv('PATH') + os.pathsep + os.path.join(self._ctx['BUILD_DIR'], 'php', 'lib'),
                 'LD_LIBRARY_PATH': os.path.join(self._ctx['BUILD_DIR'],
                                                 'php', 'lib'),
                 'HOME': self._ctx['BUILD_DIR'],
@@ -211,6 +212,7 @@ class ComposerTool(object):
                 'COMPOSER_BIN_DIR': self._ctx['COMPOSER_BIN_DIR'],
                 'COMPOSER_CACHE_DIR': self._ctx['COMPOSER_CACHE_DIR']
             }
+
             composerCmd = [phpPath,
                            '-c "%s"' % phpCfg,
                            composerPath,
