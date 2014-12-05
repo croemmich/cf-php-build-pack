@@ -37,7 +37,7 @@ DEFAULTS = {
                              '{COMPOSER_VERSION}/{COMPOSER_PACKAGE}',
     'COMPOSER_HASH_URL': '{DOWNLOAD_URL}/composer/{COMPOSER_VERSION}/'
                          '{COMPOSER_PACKAGE}.{CACHE_HASH_ALGORITHM}',
-    'COMPOSER_INSTALL_OPTIONS': ['--no-interaction', '--no-dev', '--verbose'],
+    'COMPOSER_INSTALL_OPTIONS': ['--no-interaction', '--no-dev'],
     'COMPOSER_VENDOR_DIR': '{BUILD_DIR}/{LIBDIR}/vendor',
     'COMPOSER_BIN_DIR': '{BUILD_DIR}/php/bin',
     'COMPOSER_CACHE_DIR': '{CACHE_DIR}/composer'
@@ -189,31 +189,28 @@ class ComposerTool(object):
             print msg
         # rewrite a temp copy of php.ini for use by composer
         (self._builder.copy()
-         .under('{BUILD_DIR}/php/etc')
-         .where_name_is('php.ini')
-         .into('TMPDIR')
+            .under('{BUILD_DIR}/php/etc')
+            .where_name_is('php.ini')
+            .into('{TMPDIR}/php/etc')
          .done())
-        utils.rewrite_cfgs(os.path.join(self._ctx['TMPDIR'], 'php.ini'),
+
+        phpCfgDir = os.path.join(self._ctx['TMPDIR'], 'php', 'etc')
+        phpCfg = os.path.join(phpCfgDir, 'php.ini')
+
+        utils.rewrite_cfgs(os.path.join(self._ctx['TMPDIR'], 'php', 'etc', 'php.ini'),
                            {'TMPDIR': self._ctx['TMPDIR'],
                             'HOME': self._ctx['BUILD_DIR']},
                            delim='@')
-
-        (self._builder.copy()
-         .under('TMPDIR')
-         .where_name_is('php.ini')
-         .into('BUILD_DIR')
-         .done())
-
         # Run from /tmp/staged/app
         try:
             phpDir = os.path.join(self._ctx['BUILD_DIR'], 'php')
             phpBinDir = os.path.join(phpDir, 'bin')
             phpPath = os.path.join(phpBinDir, 'php')
-            phpCfg = os.path.join(self._ctx['TMPDIR'], 'php.ini')
             composerPath = os.path.join(phpBinDir, 'composer.phar')
 
             composerEnv = {
                 'PATH': os.getenv('PATH') + os.pathsep + phpBinDir,
+                'PHPRC': phpCfgDir,
                 'LD_LIBRARY_PATH': os.path.join(phpDir, 'lib'),
                 'HOME': self._ctx['BUILD_DIR'],
                 'COMPOSER_VENDOR_DIR': self._ctx['COMPOSER_VENDOR_DIR'],

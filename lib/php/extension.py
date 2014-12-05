@@ -59,7 +59,8 @@ def service_commands(ctx):
 def service_environment(ctx):
     env = {
         'LD_LIBRARY_PATH': '@LD_LIBRARY_PATH:@HOME/php/lib',
-        'PATH': '@PATH:@HOME/php/bin'
+        'PATH': '@PATH:@HOME/php/bin',
+        'PHPRC': '@HOME/php/etc'
     }
     if 'snmp' in ctx['PHP_EXTENSIONS']:
         env['MIBDIRS'] = '@HOME/php/mibs'
@@ -90,5 +91,5 @@ def compile(install):
             .from_application('php/etc/php.ini')
             .include_modules_from('PHP_MODULES')
             .include_module(is_web_app(ctx) and 'fpm' or 'cli')
-     .done())
+            .done())
     return 0
