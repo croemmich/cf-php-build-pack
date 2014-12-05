@@ -148,14 +148,15 @@ class Installer(object):
         self.builder = builder
         self._log = _log
         self._installer = CloudFoundryInstaller(self.builder._ctx)
+        self._installPath = None
 
     def package(self, key):
         if key in self.builder._ctx.keys():
             key = self.builder._ctx[key]
-        self.builder._ctx['%s_INSTALL_PATH' % key] = \
-            self._installer.install_binary(key)
-        self._log.info("Installed [%s] to [%s]", key,
-                       self.builder._ctx['%s_INSTALL_PATH' % key])
+
+        self._installPath = self._installer.install_binary(key)
+        self.builder._ctx['%s_INSTALL_PATH' % key] = self._installPath
+        self._log.info("Installed [%s] to [%s]", key, self._installPath)
         return self
 
     def packages(self, *keys):
@@ -168,6 +169,10 @@ class Installer(object):
 
     def config(self):
         return ConfigInstaller(self)
+
+    def path(self, *paths):
+        for path in paths:
+            os.environ["PATH"] += os.pathsep + os.path.join(self._installPath, path)
 
     def extensions(self):
         ctx = self.builder._ctx
