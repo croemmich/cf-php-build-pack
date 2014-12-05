@@ -228,7 +228,7 @@ class ComposerTool(object):
                                    shell=True)
             _log.debug('composer output [%s]', output)
         except Exception as e:
-            _log.error("Composer failed: %s", e.message)
+            _log.error("Composer failed: %s" % e.message)
 
 
 # Extension Methods
