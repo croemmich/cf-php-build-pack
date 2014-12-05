@@ -197,6 +197,13 @@ class ComposerTool(object):
                            {'TMPDIR': self._ctx['TMPDIR'],
                             'HOME': self._ctx['BUILD_DIR']},
                            delim='@')
+
+        (self._builder.copy()
+         .under('TMPDIR')
+         .where_name_is('php.ini')
+         .into('BUILD_DIR')
+         .done())
+
         # Run from /tmp/staged/app
         try:
             phpDir = os.path.join(self._ctx['BUILD_DIR'], 'php')
