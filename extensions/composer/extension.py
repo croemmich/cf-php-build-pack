@@ -37,7 +37,7 @@ DEFAULTS = {
                              '{COMPOSER_VERSION}/{COMPOSER_PACKAGE}',
     'COMPOSER_HASH_URL': '{DOWNLOAD_URL}/composer/{COMPOSER_VERSION}/'
                          '{COMPOSER_PACKAGE}.{CACHE_HASH_ALGORITHM}',
-    'COMPOSER_INSTALL_OPTIONS': ['--no-interaction', '--no-dev'],
+    'COMPOSER_INSTALL_OPTIONS': ['--no-interaction', '--no-dev', '--verbose'],
     'COMPOSER_VENDOR_DIR': '{BUILD_DIR}/{LIBDIR}/vendor',
     'COMPOSER_BIN_DIR': '{BUILD_DIR}/php/bin',
     'COMPOSER_CACHE_DIR': '{CACHE_DIR}/composer'
@@ -218,7 +218,7 @@ class ComposerTool(object):
                            '-c "%s"' % phpCfg,
                            composerPath,
                            'install',
-                           '--no-progress']
+                           '--no-progress', '--no-ansi']
             composerCmd.extend(self._ctx['COMPOSER_INSTALL_OPTIONS'])
             self._log.debug("Running [%s]", ' '.join(composerCmd))
             output = stream_output(sys.stdout,
