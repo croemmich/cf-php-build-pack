@@ -199,14 +199,15 @@ class ComposerTool(object):
                            delim='@')
         # Run from /tmp/staged/app
         try:
-            phpPath = os.path.join(self._ctx['BUILD_DIR'], 'php', 'bin', 'php')
+            phpDir = os.path.join(self._ctx['BUILD_DIR'], 'php')
+            phpBinDir = os.path.join(phpDir, 'bin')
+            phpPath = os.path.join(phpBinDir, 'php')
             phpCfg = os.path.join(self._ctx['TMPDIR'], 'php.ini')
-            composerPath = os.path.join(self._ctx['BUILD_DIR'], 'php',
-                                        'bin', 'composer.phar')
+            composerPath = os.path.join(phpBinDir, 'composer.phar')
+
             composerEnv = {
-                'PATH': os.getenv('PATH') + os.pathsep + os.path.join(self._ctx['BUILD_DIR'], 'php', 'lib'),
-                'LD_LIBRARY_PATH': os.path.join(self._ctx['BUILD_DIR'],
-                                                'php', 'lib'),
+                'PATH': os.getenv('PATH') + os.pathsep + phpBinDir,
+                'LD_LIBRARY_PATH': os.path.join(phpDir, 'lib'),
                 'HOME': self._ctx['BUILD_DIR'],
                 'COMPOSER_VENDOR_DIR': self._ctx['COMPOSER_VENDOR_DIR'],
                 'COMPOSER_BIN_DIR': self._ctx['COMPOSER_BIN_DIR'],
