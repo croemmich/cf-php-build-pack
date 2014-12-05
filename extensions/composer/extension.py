@@ -227,8 +227,8 @@ class ComposerTool(object):
                                    cwd=self._ctx['BUILD_DIR'],
                                    shell=True)
             _log.debug('composer output [%s]', output)
-        except Exception:
-            _log.error("Command Failed: %s")
+        except Exception as e:
+            _log.error("Composer failed: %s", e.message)
 
 
 # Extension Methods
