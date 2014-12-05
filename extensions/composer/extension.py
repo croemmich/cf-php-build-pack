@@ -187,22 +187,24 @@ class ComposerTool(object):
                 'of dependencies are used when you deploy to CloudFoundry.')
             self._log.warning(msg)
             print msg
+
         # rewrite a temp copy of php.ini for use by composer
-        (self._builder.copy()
-            .under('{BUILD_DIR}/php/etc')
-            .where_name_is('php.ini')
-            .into('TMPDIR')
-         .done())
-        utils.rewrite_cfgs(os.path.join(self._ctx['TMPDIR'], 'php.ini'),
-                           {'TMPDIR': self._ctx['TMPDIR'],
-                            'HOME': self._ctx['BUILD_DIR']},
-                           delim='@')
+        # (self._builder.copy()
+        # .under('{BUILD_DIR}/php/etc')
+        #     .where_name_is('php.ini')
+        #     .into('TMPDIR')
+        #  .done())
+        # utils.rewrite_cfgs(os.path.join(self._ctx['TMPDIR'], 'php.ini'),
+        #                    {'TMPDIR': self._ctx['TMPDIR'],
+        #                     'HOME': self._ctx['BUILD_DIR']},
+        #                    delim='@')
+
         # Run from /tmp/staged/app
         try:
             phpDir = os.path.join(self._ctx['BUILD_DIR'], 'php')
             phpBinDir = os.path.join(phpDir, 'bin')
             phpPath = os.path.join(phpBinDir, 'php')
-            phpCfg = os.path.join(self._ctx['TMPDIR'], 'php.ini')
+            phpCfg = os.path.join(phpDir, 'etc', 'php.ini')
             composerPath = os.path.join(phpBinDir, 'composer.phar')
 
             composerEnv = {
